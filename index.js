@@ -107,21 +107,28 @@ module.exports = class Stegolo {
 
     switch(this.method) {
     case 'each':
-      for(let i = 0; i < nextItems.length; i++)
+      // For each item
+      for(let i = 0; i < nextItems.length; i++) {
+        // Run the individual item + await
         await this.eachFn(nextItems[i], i)
+
+        // Save the current item
+        this.save([nextItems[i]])
+      }
 
       break
     case 'many':
+      // Run items in the manyFn
       await this.manyFn(nextItems, this.run)
+
+      // Save all the items
+      this.save(nextItems)
 
       break
     }
 
     // Increase run count
     this.run += 1
-
-    // Save the items in the file
-    this.save(nextItems)
 
     // Delete interval if there are no more items
     if(this.items.length === 0)
